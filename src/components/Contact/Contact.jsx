@@ -1,20 +1,14 @@
 import { FaUser } from "react-icons/fa";
 import { FaPhoneAlt } from "react-icons/fa";
-import { nanoid } from 'nanoid'
 
+export default function Contact({ contact, onDelete }) {
+  const { id, name, number } = contact;
 
-export default function Contact({contacts}) {
-    return (
- <ul>
-        {contacts.map(contact => {
-          return (
-        <li key={contact.id}>
-          <p><FaUser /> {contact.name}</p>
-          <p><FaPhoneAlt /> {contact.number}</p>
-          <button type="button">Delete</button>
-        </li>
-      )})}
-  </ul>
-
-    )
+  return (
+    <div>
+      <p><FaUser /> {name}</p>
+      <p><FaPhoneAlt /> {number}</p>
+      <button type="button" onClick={() => onDelete(id)}>Delete</button>
+    </div>
+  )
 }

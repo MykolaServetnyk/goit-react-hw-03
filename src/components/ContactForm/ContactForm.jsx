@@ -2,33 +2,37 @@ import css from './ContactForm.module.css';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import { nanoid } from 'nanoid';
+import { useId } from 'react';
 
 
-const UserSchema = Yup.object().shape({
-    name: Yup.string()
-        .trim()
-        .min(3, "Min 3 chars!!!")
-        .max(50, "Max 50 chars!!!")
-        .required("Is required!!!"),
-    number: Yup.string()
-        .trim()
-        .min(3, "Min 3 chars!!!")
-        .max(50, "Max 50 chars!!!")
-        .required("Is required!!!"),
-    
+const UserSchema =  Yup.object().shape({
+  name: Yup.string()
+    .min(3, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  number: Yup.string()
+    .matches(/^\d{3}-\d{2}-\d{2}$/, "Invalid phone number format")
+    .required("Required"),
 });
-export default function ContactForm({onAdd}) {
+
+export default function ContactForm({ onAdd }) {
+    const nameFieldId = useId();
+    const numberFieldId = useId();
+
     const handleSubmit = (values, actions) => {
-        onAdd(
-            {
-            id: nanoid(), 
+        
+        const newContact = {
+            id: nanoid(),
             name: values.name,
-            number: values.number});
-        console.log('handleSubmit', values)
+            number: values.number
+        };
+
+        onAdd(newContact);
         actions.resetForm();
 }
     return (
         <Formik initialValues={{
+            id: '',
             name: '',
             number:''
         }}
@@ -36,12 +40,12 @@ export default function ContactForm({onAdd}) {
             onSubmit={handleSubmit}>
             <Form className={css.form}>
                 <div>
-                    <label htmlFor="name">Name</label>
+                    <label htmlFor={nameFieldId}>Name</label>
                     <Field name="name" />
                     <ErrorMessage name="name" component="div" />
                 </div>
                 <div>
-                    <label htmlFor="number">Number</label>
+                    <label htmlFor={numberFieldId}>Number</label>
                     <Field name="number" />
                     <ErrorMessage name="number" component="div" />
                 </div>
